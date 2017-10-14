@@ -38,7 +38,18 @@
 
         <svg class="chart"></svg>
 
+
+        <ul id="list">
+            <li data-username="shawnbot">Shawn Allen</li>
+            <li data-username="mbostock">Mike Bostock</li>
+            <li>sdsdsdsd</li>
+          </ul>
+
     </body>
-    <script src="./d3.js"></script>
+    <script src="../lib/d3.js"></script>
     <script src="./index.js"></script>
+    <script>
+        d3.selectAll('li').datum(function(){return console.log(this.dataset);this.dataset;})
+    
+    </script>
 </html>
