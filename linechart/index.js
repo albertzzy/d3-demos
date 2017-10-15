@@ -7,6 +7,12 @@ var canvas = d3.select("canvas").node(),
 context = canvas.getContext("2d"),
 canvasWidth = canvas.width;
 
+/* 
+    domain 实际值
+    range 视觉值
+*/
+
+
 
 // 离散
 var x0 = d3.scaleQuantize()
@@ -25,19 +31,23 @@ var x2 = d3.scaleLinear()
 // axis - y
 var y = d3.scaleLinear()
 .domain([0, 255])
-.range([height, 0]);
+.range([height, 0])
+// .range([0, height])
 
 var g = svg.append("g")
 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 g.append("g")
 .selectAll("circle")
-.data(x1.domain())
+// .data(x1.domain())
+.data(x0.range())
 .enter().append("circle")
-.attr("cx", function(d) { /* console.log(d); */ return x1(d); })
+.attr("cx", function(d) { return x1(d); })
 .attr("r", 20)
 .attr("fill", function(d) { return d; });
 
+
+// axises
 g.append("g")
 .attr("class", "axis axis--x")
 .call(d3.axisTop(x1).tickPadding(18));
@@ -50,6 +60,10 @@ g.append("g")
 .attr("class", "axis axis--x")
 .attr("transform", "translate(0," + height + ")")
 .call(d3.axisBottom(x2));
+
+
+
+
 
 var line = g.append("g")
 .attr("class", "lines")
@@ -70,15 +84,12 @@ line.append("path")
 .attr("stroke-width", 3)
 .attr("d", function(values) {
 
-    console.log(values);
-
-
   var i = d3.interpolateBasis(values.map(function(v) { return v[1]; }));
 
   
   return d3.line()
       .x(function(t) {return x2(t); })
-      .y(function(t) { console.log(i(t));return y(i(t)); })
+      .y(function(t) { /* console.log(i(t)); */return y(i(t)); })
       (d3.range(0, 1 + 1e-6, 0.001));
 });
 
@@ -107,7 +118,11 @@ interpolate = d3.interpolateRgbBasis(x0.range());
 
 for (var i = 0, k = 0; i < canvasWidth; ++i, k += 4) {
 
-    var c = d3.rgb(interpolate(i / (canvasWidth - 1)));
+
+
+
+    var c = d3.rgb(interpolate(i / (canvasWidth - 1)));   //顺滑
+    // var c = d3.rgb(x0(i/(canvasWidth-1)));
     
     image.data[k] = c.r;
     image.data[k + 1] = c.g;
